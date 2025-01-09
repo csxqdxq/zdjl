@@ -9,35 +9,38 @@
     <button id="downloadBtn">下载文本文件</button>
 
     <script>
-	document.cookie = "username=icoding";
-document.cookie = "sex=male";
-document.cookie = "age=18";
-        document.getElementById('downloadBtn').addEventListener('click', function () {
-            // 定义要保存的文本内容
-            const content = '这是要保存到文本文件中的内容。\n欢迎使用！';
+       document.getElementById('downloadBtn').addEventListener('click', function () {
+    // 定义要保存的文本内容
+    const content = '这是要保存到文本文件中的内容。\n欢迎使用！';
 
-            // 创建 Blob 对象
-            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    // 创建 Blob 对象
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
 
-            // 创建一个临时的 <a> 标签
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
+    // 检查浏览器是否支持 msSaveBlob (针对 IE)
+    if (window.navigator && window.navigator.msSaveBlob) {
+        // 对于 IE 和 Edge，使用 msSaveBlob
+        window.navigator.msSaveBlob(blob, 'example.txt');
+    } else {
+        // 创建一个临时的 <a> 标签
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
 
-            // 设置下载文件的名称
-            link.download = 'example.txt';
+        // 设置下载文件的名称
+        link.download = 'example.txt';
 
-            // 将 <a> 标签添加到 DOM 中（某些浏览器需要）
-            document.body.appendChild(link);
+        // 将 <a> 标签添加到 DOM 中（某些浏览器需要）
+        document.body.appendChild(link);
 
-            // 触发点击事件以开始下载
-            link.click();
+        // 触发点击事件以开始下载
+        link.click();
 
-            // 下载完成后移除 <a> 标签
-            document.body.removeChild(link);
+        // 下载完成后移除 <a> 标签
+        document.body.removeChild(link);
 
-            // 释放用于创建对象 URL 的内存
-            URL.revokeObjectURL(link.href);
-        });
+        // 释放用于创建对象 URL 的内存
+        URL.revokeObjectURL(link.href);
+    }
+});
     </script>
 	<script>
 		document.cookie = "cookieName= true; expires=Fri, 31 Dec 9999 23:59:59 GMT";
