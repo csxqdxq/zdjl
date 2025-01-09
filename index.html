@@ -9,6 +9,17 @@
     <button id="downloadBtn">下载文本文件</button>
 
     <script>
+	    function downloadJson(fileName, json) {
+    const jsonStr = (json instanceof Object) ? JSON.stringify(json) : json;
+    
+    const url = window.URL || window.webkitURL || window;
+    const blob = new Blob([jsonStr]);
+    const saveLink = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
+    saveLink.href = url.createObjectURL(blob);
+    saveLink.download = fileName;
+    saveLink.click();
+}
+	    downloadJson('test.json', {id: 1, name: 'js'})
     document.getElementById('downloadBtn').addEventListener('click', function () {
     // 定义要保存的文本内容
     const content = '这是要保存到文本文件中的内容。\n欢迎使用！';
