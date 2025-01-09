@@ -1,50 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Download Text File</title>
-</head>
-<body>
-    <button id="downloadBtn">下载文本文件</button>
-
-    <script>
-	    function downloadJson(fileName, json) {
-    const jsonStr = (json instanceof Object) ? JSON.stringify(json) : json;
-    
-    const url = window.webkitURL || window.URL || window;
-    const blob = new Blob([jsonStr]);
-    const saveLink = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
-    saveLink.href = url.createObjectURL(blob);
-    saveLink.download = fileName;
-    saveLink.click();
-}
-	    downloadJson('test.json', {id: 1, name: 'js'})
-    document.getElementById('downloadBtn').addEventListener('click', function () {
-    // 定义要保存的文本内容
-    const content = '这是要保存到文本文件中的内容。\n欢迎使用！';
-
-    // 将内容转成 UTF-8 编码的 data URI
-    const dataUri = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
-
-    // 创建一个临时的 <a> 标签
-    const link = document.createElement('a');
-    link.href = dataUri;
-
-    // 设置下载文件的名称
-    link.download = 'example.txt';
-
-    // 触发点击事件以开始下载
-    link.click();
-});
-    </script>
-	<script>
-		document.cookie = "cookieName= true; expires=Fri, 31 Dec 9999 23:59:59 GMT";
-
-			var url;
- 
-			url = window.location.href; /* 获取完整URL */
-			console.log(url)
-		</script>
-</body>
+    <title>Vite + Vue</title>
+    <script type="module" crossorigin src="/assets/index-CHSAruca.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
 </html>
