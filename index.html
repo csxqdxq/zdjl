@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title></title>
     <script>
+        const paramsStr = window.location.search;
+        const params = new URLSearchParams(paramsStr);
         const key = params.get('key');
         if(key==null) key="csxqdxq";
         function save(obj) {
@@ -19,8 +21,6 @@
 <div id="app"></div>
 </body>
 <script>
-    const paramsStr = window.location.search;
-    const params = new URLSearchParams(paramsStr);
     const title = params.get('title');
     const script = params.get('script');
     const style = params.get('style');
