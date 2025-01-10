@@ -1,15 +1,41 @@
 <!doctype html>
-<html lang="en">
-  <head>
+<html lang="Zh-cn">
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + Vue</title>
-    <script type="module" crossorigin src="./index-CHSAruca.js"></script>
-     <script>
-       alert(window.location.href)
-     </script>
-  </head>
-  <body>
-    <div id="app"></div>
-  </body>
+    <title></title>
+</head>
+<body>
+<div id="app"></div>
+</body>
+<script>
+    const paramsStr = window.location.search;
+    console.log(paramsStr)
+    const params = new URLSearchParams(paramsStr);
+    console.log(params)
+    const title = params.get('title');
+    const script = params.get('script');
+    const style = params.get('style');
+    const html = params.get('html');
+    console.log(title)
+    if(title!=null){
+        document.title = title;
+    }
+    if (style!=null){
+        let htmlStyleElement = document.createElement("style");
+        htmlStyleElement.innerText = style;
+        document.head.appendChild(htmlStyleElement);
+    }
+    let elementById = document.getElementById("app");
+    if (html!=null){
+        elementById.innerHTML = html;
+    }else {
+        elementById.innerHTML = "没有模板";
+    }
+    if (script!=null){
+        let htmlScriptElement = document.createElement("script");
+        htmlScriptElement.innerText = script;
+        document.body.appendChild(htmlScriptElement);
+    }
+</script>
 </html>
