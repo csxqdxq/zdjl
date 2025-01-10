@@ -1,18 +1,26 @@
 <!doctype html>
+<!-- 模板渲染页面 -->
 <html lang="Zh-cn">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title></title>
+    <script>
+        document.cookie=`over=false`
+        function save(obj) {
+            let str = encodeURI(JSON.stringify(obj));
+            let base64 = btoa(str);
+            document.cookie=`zdjl=${base64}`;
+            document.cookie=`over=true`;
+        }
+    </script>
 </head>
 <body>
 <div id="app"></div>
 </body>
 <script>
     const paramsStr = window.location.search;
-    console.log(paramsStr)
     const params = new URLSearchParams(paramsStr);
-    console.log(params)
     const title = params.get('title');
     const script = params.get('script');
     const style = params.get('style');
