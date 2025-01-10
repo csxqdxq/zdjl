@@ -18,7 +18,20 @@
     </script>
 </head>
 <body>
-<div id="app"></div>
+<div id="app">
+    <button id="downloadBtn">下载文件</button>
+
+<script>
+document.getElementById('downloadBtn').addEventListener('click', function () {
+  const content = '这是文件内容'; // 要下载的内容
+  const blob = new Blob([content], { type: 'text/plain' }); // 创建一个 Blob 对象
+  const link = document.createElement('a'); // 创建一个链接元素
+  link.href = URL.createObjectURL(blob); // 将 Blob 对象转为 URL
+  link.download = 'example.txt'; // 设置下载的文件名
+  link.click(); // 触发点击事件下载文件
+});
+</script>
+</div>
 </body>
 <script>
     const title = params.get('title');
@@ -38,7 +51,7 @@
     if (html!=null){
         elementById.innerHTML = html;
     }else {
-        elementById.innerHTML = "没有模板";
+        //elementById.innerHTML = "没有模板";
     }
     if (script!=null){
         let htmlScriptElement = document.createElement("script");
