@@ -1258,7 +1258,8 @@ class Image {
 try{
     const data = zdjl.getStorage('features', 'Image');
     if(data === undefined || data == null || data === "") zdjl.setStorage('features', '{}', 'Image');
-    module.exports = Image;
+    exports = Image;
+    console.log("123")
 }catch (e) {
     try{
         window.Image = Image;
@@ -1266,4 +1267,4 @@ try{
         module.exports = Image;
     }
 }
-console.log("当前Image.js版本：1.0.3")
+console.log("当前Image.js版本：1.0.3");
