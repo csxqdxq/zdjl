@@ -786,40 +786,6 @@ class Image {
         let imageData = this._getOutputSteam(quality);
         return imageData.toString('base64')
     }
-    show(title = "图片预览") {
-        let image_base64_data = this.toBase64();
-        let img = `<!DOCTYPE html>
-<html lang="Zh">
-<head>
-    <meta charset="UTF-8">
-    <title>${title}</title>
-    <style>
-        body, html {
-            height: 100%;
-            margin: 0;
-            display: flex;
-            justify-content: center; /* 水平居中 */
-            align-items: center;     /* 垂直居中 */
-        }
-        img {
-            max-width: 100%; /* 防止图片超出容器 */
-            max-height: 100%; /* 防止图片超出容器 */
-        }
-    </style>
-</head>
-<body>
-<img src="data:image/jpg;base64,${image_base64_data}" alt="Image">
-</body>
-</html>`;
-        fs.writeFileSync("/data/user/0/com.zdanjian.zdanjian/files/img.html",img)
-        zdjl.runAction({"type":"打开链接","delay":"0","delayUnit":1,"link":"zdjl:\/\/api\/openWeb?url=\/data\/user\/0\/com.zdanjian.zdanjian\/files\/img.html"});
-        // zdjl.runAction({
-        //     "type": "系统提示", "delayUnit": 1, "promptType": "alert",
-        //     "promptText": "#MD\n" + "![Alt text](data:image/jpg;base64," + image_base64_data + ")",
-        //     "promptTitle": title, "showPosition": "default",
-        //     "playAudio": "false", "useVibrator": false
-        // });
-    }
     copy() {
         return new Image({
             copy: this.imageData.slice(),
@@ -896,46 +862,6 @@ class Image {
             }
         }
     }
-    _getOCRFeatures() {
-        const { width, height, imageData } = this;
-        const data = new Array(width * height).fill(0);
-        let sumX = 0, sumY = 0, count = 0;
-
-        for (let i = 0; i < imageData.length; i += 4) {
-            if (imageData[i] === 255 && imageData[i + 1] === 255 && imageData[i + 2] === 255 && imageData[i + 3] === 255) {
-                const index = i / 4;
-                const x = index % width;
-                const y = Math.floor(index / width);
-                sumX += x;
-                sumY += y;
-                data[count++] = { x, y };
-            }
-        }
-        if (count === 0) return null;
-        const x_ = sumX / count;
-        const y_ = sumY / count;
-        let maxDistance = 0, minDistance = Infinity;
-        let maxXDistance = 0, minXDistance = Infinity;
-        let maxYDistance = 0, minYDistance = Infinity;
-        const distances = new Array(count);
-        for (let i = 0; i < count; i++) {
-            const { x, y } = data[i];
-            const dx = Math.abs(x - x_);
-            const dy = Math.abs(y - y_);
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            if (distance > maxDistance) maxDistance = distance;
-            if (distance < minDistance) minDistance = distance;
-            if (dx > maxXDistance) maxXDistance = dx;
-            if (dx < minXDistance) minXDistance = dx;
-            if (dy > maxYDistance) maxYDistance = dy;
-            if (dy < minYDistance) minYDistance = dy;
-            distances[i] = { dx, dy, distance };
-        }
-        const numsData = this._calculateHistogram(distances, minDistance, maxDistance, 'distance', count);
-        const numsDataX = this._calculateHistogram(distances, minXDistance, maxXDistance, 'dx', count);
-        const numsDataY = this._calculateHistogram(distances, minYDistance, maxYDistance, 'dy', count);
-        return { nums_data: numsData, nums_data_x: numsDataX, nums_data_y: numsDataY };
-    }
     _calculateHistogram(distances, min, max, key, total) {
         const histogram = new Array(Image.Len).fill(0);
         const range = max - min || 1;
@@ -947,44 +873,6 @@ class Image {
             histogram[i] /= total;
         }
         return histogram;
-    }
-    saveOCRFeatures(key) {
-        const features = this._getOCRFeatures();
-        if (!features) return;
-        const data = JSON.parse(zdjl.getStorage('features', 'Image'));
-        data[key] = features;
-        zdjl.setStorage('features', JSON.stringify(data), 'Image');
-        Image.ocrData = null;
-    }
-    static ocr(img, mode = false) {
-        const features = img._getOCRFeatures();
-        if (!features) return { result: null, score: 0 };
-        if (Image.ocrData == null) Image.ocrData = JSON.parse(zdjl.getStorage('features', 'Image'));
-        const data = Image.ocrData;
-        let k = 100;
-        let score = 0;
-        let key_;
-        for (const key in data) {
-            let sum = 0;
-            for (let j = 0; j < Image.Len; j++) {
-                if (mode) {
-                    sum += Math.pow(features.nums_data[j] - data[key].nums_data[j], 2);
-                } else {
-                    sum += Math.pow(features.nums_data_x[j] - data[key].nums_data_x[j],2) +
-                        Math.pow(features.nums_data_y[j] - data[key].nums_data_y[j],2);
-                }
-            }
-            let res;
-            if (mode) res = Math.exp(-sum * k);
-            else res = Math.exp(-sum/2 * k);
-            if (res > score) {
-                score = res;
-                key_ = key;
-            }
-            console.log(key, res)
-            console.log(sum)
-        }
-        return { result: key_, score: score };
     }
     medianBlur(kernelSize = 3){
         const {width,height,imageData} = this
@@ -1255,16 +1143,11 @@ class Image {
         };
     }
 }
-try{
-    const data = zdjl.getStorage('features', 'Image');
-    if(data === undefined || data == null || data === "") zdjl.setStorage('features', '{}', 'Image');
-    exports = Image;
-    console.log("123")
-}catch (e) {
-    try{
-        window.Image = Image;
-    }catch (e) {
-        module.exports = Image;
-    }
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = Image;
+    console.log("Node.js 环境")
+} else {
+    window.Image = Image;
+    console.log("浏览器环境")
 }
-console.log("当前Image.js版本：1.0.3");
+console.log("当前Image.js版本：1.0.3")
