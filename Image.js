@@ -1143,11 +1143,5 @@ class Image {
         };
     }
 }
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = Image;
-    console.log("Node.js 环境")
-} else {
-    window.Image = Image;
-    console.log("浏览器环境")
-}
+module.exports = Image;
 console.log("当前Image.js版本：1.0.3")
