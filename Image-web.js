@@ -1921,13 +1921,10 @@ let PNG;
 
 // Make available for import by `require()`
     var pako;
+    pako = window.pako;
    PNG = UPNG;
+    function log() { if (typeof process=="undefined" || process.env.NODE_ENV=="development") console.log.apply(console, arguments);  }
     (function(UPNG, pako){
-
-
-
-
-
         UPNG.toRGBA8 = function(out)
         {
             var w = out.width, h = out.height;
