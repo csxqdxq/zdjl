@@ -11,6 +11,7 @@ class Image {
     static Bottom = 3;
     static Len = 10;
     static ocrData = null;
+    static Type = 0;
     constructor(image_data) {
         if (image_data.base64 !== undefined) {
             this.imageData = this._getImageData(image_data)
@@ -774,9 +775,12 @@ class Image {
         }
     }
     _getOutputSteam(quality) {
-        let bufferRawImageData = JPG.encode({width:this.width,height:this.height,data:this.imageData,comments:undefined},quality);
-        return bufferRawImageData.data;
-        //return PNG.encode([this.imageData.buffer], this.width, this.height, 0);
+        if (Image.Type === 0){
+            let bufferRawImageData = JPG.encode({width:this.width,height:this.height,data:this.imageData,comments:undefined},quality);
+            return bufferRawImageData.data;
+        }else if (Image.Type === 1)
+            return PNG.encode([this.imageData.buffer], this.width, this.height, 0);
+        else return null;
     }
     write(path,quality = 50) {
         let imageData = this._getOutputSteam(quality);
